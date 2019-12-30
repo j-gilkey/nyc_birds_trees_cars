@@ -146,6 +146,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
 #tree data csv
 2015StreetTreesCensus_TREES.csv
