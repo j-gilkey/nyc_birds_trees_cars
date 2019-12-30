@@ -23,3 +23,8 @@ def insert_bird(bird_tuple):
 
     cursor.execute(add_bird, bird_tuple)
     cnx.commit()
+
+def get_all_bird_obsv_id_and_lng_lat():
+    get_all = ('''SELECT bird_obsv_id, lat, lng FROM birds''')
+    cursor.execute(get_all)
+    return cursor.fetchall()
