@@ -36,7 +36,7 @@ TABLES['birds'] = ("""
 
 TABLES['trees'] = (
 """CREATE TABLE trees (
-    tree_id int,
+    tree_id int NOT NULL,
     health varchar(10),
     spc_latin varchar(100),
     spc_common varchar(100),
@@ -45,8 +45,8 @@ TABLES['trees'] = (
     zip_city varchar(100),
     borocode int,
     boroname varchar(100),
-    Latitude decimal(10,8)
-    longitude decimal(10,8)
+    lat decimal(10,8),
+    lng decimal(10,8),
     PRIMARY KEY (tree_id)
     );""")
 
@@ -64,3 +64,5 @@ def table_creation(table_list):
                 print(err.msg)
         else:
             print("OK")
+
+#table_creation(TABLES)
