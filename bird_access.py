@@ -22,4 +22,4 @@ def bird_parser(records):
     return
 
 
-bird_parser(get_nyc_obsv())
+#bird_parser(get_nyc_obsv())
