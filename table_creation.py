@@ -29,12 +29,26 @@ TABLES['birds'] = ("""
       locName varchar(50),
       obsDt varchar(50),
       how_many int(22),
-      lat decimal(8,4),
-      lng decimal(8,4),
+      lat decimal(10,8),
+      lng decimal(10,8),
       PRIMARY KEY (bird_obsv_id)
     ) ENGINE=InnoDB""")
 
-
+TABLES['trees'] = (
+"""CREATE TABLE trees (
+    tree_id int,
+    health varchar(10),
+    spc_latin varchar(100),
+    spc_common varchar(100),
+    address varchar(150),
+    zipcode int,
+    zip_city varchar(100),
+    borocode int,
+    boroname varchar(100),
+    Latitude decimal(10,8)
+    longitude decimal(10,8)
+    PRIMARY KEY (tree_id)
+    );""")
 
 #table creation function accepts a list and exectutes each element
 def table_creation(table_list):
