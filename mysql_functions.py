@@ -15,3 +15,11 @@ cnx = mysql.connector .connect(
 
 #start cursor
 cursor = cnx.cursor()
+
+def insert_bird(bird_tuple):
+    add_bird = ("""INSERT INTO birds
+               (speciesCode, comName, sciName, locId, locName, obsDt, how_many, lat, lng)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""")
+
+    cursor.execute(add_bird, bird_tuple)
+    cnx.commit()
