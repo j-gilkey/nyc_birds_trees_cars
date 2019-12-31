@@ -19,21 +19,53 @@ cnx = mysql.connector.connect(
 
 cursor = cnx.cursor()
 
-# make API call for tree data
+
+
+# make API call for 2015 tree data
 client = Socrata("data.cityofnewyork.us", 'tree_key')
 client = Socrata('data.cityofnewyork.us',
-                  config.tree_token,
+                  config.tree_token_15,
                   username=config.od_user,
                   password=config.od_pw)
-results = client.get("5rq2-4hqu", limit=690000)
-# convert to pandas DataFrame
-tree_data_total = pd.DataFrame.from_records(results)
-
-# print(tree_data_total)
-
+results15 = client.get("5rq2-4hqu", limit=690000)
+tree_data_15 = pd.DataFrame.from_records(results15)
 
 # select all rows and only the columns wanted
-tree_data = pd.DataFrame(tree_data_total.loc[:, ['tree_id', 'health', 'spc_latin', 'spc_common', 'address', 'zipcode', 'zip_city', 'borocode', 'boroname', 'latitude', 'longitude']])
+trees_15 = pd.DataFrame(tree_data_15.loc[:, ['tree_id', 'health', 'spc_latin', 'spc_common', 'address', 'zipcode', 'boroname', 'latitude', 'longitude']])
 
-# parse tree data into tuples to insert into database
-tree_tuples = list(tree_data.itertuples(index=False, name=None))
+# parse tree data into tuples
+trees_15_tuples = list(trees_15.itertuples(index=False, name=None))
+
+
+
+# make API call for 2005 tree data
+client = Socrata("data.cityofnewyork.us", 'tree_key')
+client = Socrata('data.cityofnewyork.us',
+                  config.tree_token_05,
+                  username=config.od_user,
+                  password=config.od_pw)
+results05 = client.get("29bw-z7pj", limit=600000)
+tree_data_05 = pd.DataFrame.from_records(results05)
+
+# select all rows and only the columns wanted
+trees_05 = pd.DataFrame(tree_data_05.loc[:, ['objectid', 'status', 'spc_latin', 'spc_common', 'address', 'zipcode', 'boroname', 'latitude', 'longitude']])
+
+# parse tree data into tuples
+trees_05_tuples = list(trees_05.itertuples(index=False, name=None))
+
+
+
+# make API call for 1995 tree data
+client = Socrata("data.cityofnewyork.us", 'tree_key')
+client = Socrata('data.cityofnewyork.us',
+                  config.tree_token_95,
+                  username=config.od_user,
+                  password=config.od_pw)
+results95 = client.get("kyad-zm4j", limit=600000)
+tree_data_95 = pd.DataFrame.from_records(results95)
+
+# select all rows and only the columns wanted
+trees_95 = pd.DataFrame(tree_data_95.loc[:, ['recordid', 'condition', 'spc_latin', 'spc_common', 'address', 'zip_new', 'borough', 'latitude', 'longitude']])
+
+# parse tree data into tuples
+trees_95_tuples = list(trees_95.itertuples(index=False, name=None))
