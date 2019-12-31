@@ -34,8 +34,8 @@ TABLES['birds'] = ("""
       PRIMARY KEY (bird_obsv_id)
     ) ENGINE=InnoDB""")
 
-TABLES['trees'] = (
-"""CREATE TABLE trees (
+TABLES['trees_1995'] = (
+"""CREATE TABLE trees_1995 (
     tree_id int NOT NULL,
     health varchar(10),
     spc_latin varchar(100),
@@ -47,6 +47,47 @@ TABLES['trees'] = (
     boroname varchar(100),
     lat decimal(10,8),
     lng decimal(10,8),
+    total_neighbors int,
+    distinct_spc_neighbors int,
+    same_spc_neighbors int,
+    PRIMARY KEY (tree_id)
+    );""")
+
+TABLES['trees_2005'] = (
+"""CREATE TABLE trees_2005 (
+    tree_id int NOT NULL,
+    health varchar(10),
+    spc_latin varchar(100),
+    spc_common varchar(100),
+    address varchar(150),
+    zipcode int,
+    zip_city varchar(100),
+    borocode int,
+    boroname varchar(100),
+    lat decimal(10,8),
+    lng decimal(10,8),
+    total_neighbors int,
+    distinct_spc_neighbors int,
+    same_spc_neighbors int,
+    PRIMARY KEY (tree_id)
+    );""")
+
+TABLES['trees_2015'] = (
+"""CREATE TABLE trees_2015 (
+    tree_id int NOT NULL,
+    health varchar(10),
+    spc_latin varchar(100),
+    spc_common varchar(100),
+    address varchar(150),
+    zipcode int,
+    zip_city varchar(100),
+    borocode int,
+    boroname varchar(100),
+    lat decimal(10,8),
+    lng decimal(10,8),
+    total_neighbors int,
+    distinct_spc_neighbors int,
+    same_spc_neighbors int,
     PRIMARY KEY (tree_id)
     );""")
 
@@ -65,4 +106,4 @@ def table_creation(table_list):
         else:
             print("OK")
 
-#table_creation(TABLES)
+table_creation(TABLES)
