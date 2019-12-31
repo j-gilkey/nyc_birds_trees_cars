@@ -30,10 +30,27 @@ def get_all_bird_obsv_id_and_lng_lat():
     return cursor.fetchall()
 
 
-def insert_tree(tree_tuples):
-    add_tree = ("""INSERT INTO trees
-               (tree_id, health, spc_latin, spc_common, address, zipcode, zip_city, borocode, boroname, lat, lng)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""")
+def insert_tree_1995(tree_tuples):
+    add_tree = ("""INSERT INTO trees_1995
+               (tree_id, health, spc_latin, spc_common, address, zipcode, boroname, lat, lng)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);""")
+
+    cursor.execute(add_tree, tree_tuples)
+    cnx.commit()
+
+
+def insert_tree_2005(tree_tuples):
+    add_tree = ("""INSERT INTO trees_2005
+               (tree_id, health, spc_latin, spc_common, address, zipcode, boroname, lat, lng)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);""")
+
+    cursor.execute(add_tree, tree_tuples)
+    cnx.commit()
+
+def insert_tree_2015(tree_tuples):
+    add_tree = ("""INSERT INTO trees_2015
+               (tree_id, health, spc_latin, spc_common, address, zipcode, boroname, lat, lng)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);""")
 
     cursor.execute(add_tree, tree_tuples)
     cnx.commit()
