@@ -28,3 +28,12 @@ def get_all_bird_obsv_id_and_lng_lat():
     get_all = ('''SELECT bird_obsv_id, lat, lng FROM birds''')
     cursor.execute(get_all)
     return cursor.fetchall()
+
+
+def insert_tree(tree_tuples):
+    add_tree = ("""INSERT INTO trees
+               (tree_id, health, spc_latin, spc_common, address, zipcode, zip_city, borocode, boroname, lat, lng)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);""")
+
+    cursor.execute(add_tree, tree_tuples)
+    cnx.commit()
