@@ -85,6 +85,15 @@ TABLES['trees_2015'] = (
     PRIMARY KEY (tree_id)
     );""")
 
+TABLES['zip_demographics'] = (
+"""CREATE TABLE zip_demographics(
+    zip_code int NOT NULL,
+    median_home_value int,
+    median_household_income int,
+    land_area_in_sqmi decimal(20,8),
+    PRIMARY KEY (zip_code)
+    );""")
+
 #table creation function accepts a list and exectutes each element
 def table_creation(table_list):
     for table_name in table_list:
