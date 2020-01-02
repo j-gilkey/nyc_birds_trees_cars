@@ -59,47 +59,60 @@ def get_zip_info():
 
 def get_all_trees_agg():
 
-    get_tree = ('''(SELECT spc_latin
-                    		,zipcode
+    get_tree = ('''(SELECT zipcode
                     		,boroname
-                    		,health
+                            ,CASE
+                                WHEN health = 'Excellent' THEN 1
+                                WHEN health = 'Good' THEN 1
+                                WHEN health = 'Planting S' THEN 1
+                                ELSE 0
+                            END AS healthy
                             ,'1995' AS year
-                    		,count(tree_id)
+                    		,count(tree_id) AS tree_count
+                            ,count(DISTINCT spc_latin) AS distinct_species
                     FROM trees_1995
-                    GROUP BY spc_latin
-                    		,zipcode
-                    		,boroname
-                    		,health
+                    GROUP BY 1
+                    		,2
+                    		,3
+                    		,4
                     )
 
                     UNION ALL
 
-                    (SELECT spc_latin
-                    		,zipcode
+                    (SELECT zipcode
                     		,boroname
-                    		,health
+                    		,CASE
+                                WHEN health = 'Excellent' THEN 1
+                                WHEN health = 'Good' THEN 1
+                                ELSE 0
+                            END AS healthy
                             ,'2005' AS year
-                    		,count(tree_id)
+                    		,count(tree_id)  AS tree_count
+                            ,count(DISTINCT spc_latin) AS distinct_species
                     FROM trees_2005
-                    GROUP BY spc_latin
-                    		,zipcode
-                    		,boroname
-                    		,health
+                    GROUP BY 1
+                    		,2
+                    		,3
+                    		,4
                     )
 
                     UNION ALL
 
-                    (SELECT spc_latin
-                    		,zipcode
+                    (SELECT zipcode
                     		,boroname
-                    		,health
+                    		,CASE
+                                WHEN health = 'Fair' THEN 1
+                                WHEN health = 'Good' THEN 1
+                                ELSE 0
+                            END AS healthy
                             ,'2015' AS year
-                    		,count(tree_id)
+                    		,count(tree_id)  AS tree_count
+                            ,count(DISTINCT spc_latin) AS distinct_species
                     FROM trees_2015
-                    GROUP BY spc_latin
-                    		,zipcode
-                    		,boroname
-                    		,health
+                    GROUP BY 1
+                    		,2
+                    		,3
+                    		,4
                     )''')
 
     cursor.execute(get_tree)
