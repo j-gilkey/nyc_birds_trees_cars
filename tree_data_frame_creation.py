@@ -7,7 +7,7 @@ def create_tree_dataframe():
     data =  mysql_functions.get_all_trees_agg()
     #retrieve data stored in MySQL
 
-    df = pd.DataFrame(data, columns = ['species', 'zipcode', 'boro', 'health', 'year', 'tree_count'])
+    df = pd.DataFrame(data, columns = ['zipcode', 'boro', 'healthy', 'year', 'tree_count', 'distinct_species_count'])
 
     return df
 
@@ -27,4 +27,5 @@ def box_plot(df):
 
 
 df  = create_tree_dataframe()
-print(list(df.zipcode.unique()))
+print(df)
+#print(list(df.zipcode.unique()))
