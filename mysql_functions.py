@@ -42,6 +42,21 @@ def insert_tree_2015(tree_tuples):
     cursor.execute(add_tree, tree_tuples)
     cnx.commit()
 
+def insert_zip(zip_tuple):
+    add_zip = ("""INSERT INTO zip_demographics
+               (zip_code, median_home_value, median_household_income, land_area_in_sqmi)
+               VALUES (%s, %s, %s, %s);""")
+
+    cursor.execute(add_zip, zip_tuple)
+    cnx.commit()
+
+def get_zip_info():
+
+    get_zip  = ('(SELECT * FROM zip_demographics)')
+
+    cursor.execute(get_zip)
+    return cursor.fetchall()
+
 def get_all_trees_agg():
 
     get_tree = ('''(SELECT spc_latin
