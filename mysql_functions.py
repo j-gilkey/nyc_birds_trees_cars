@@ -16,19 +16,6 @@ cnx = mysql.connector .connect(
 #start cursor
 cursor = cnx.cursor()
 
-def insert_bird(bird_tuple):
-    add_bird = ("""INSERT INTO birds
-               (speciesCode, comName, sciName, locId, locName, obsDt, how_many, lat, lng)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""")
-
-    cursor.execute(add_bird, bird_tuple)
-    cnx.commit()
-
-def get_all_bird_obsv_id_and_lng_lat():
-    get_all = ('''SELECT bird_obsv_id, lat, lng FROM birds''')
-    cursor.execute(get_all)
-    return cursor.fetchall()
-
 
 def insert_tree_1995(tree_tuples):
     add_tree = ("""INSERT INTO trees_1995
@@ -54,3 +41,51 @@ def insert_tree_2015(tree_tuples):
 
     cursor.execute(add_tree, tree_tuples)
     cnx.commit()
+
+def get_all_trees_agg():
+
+    get_tree = ('''(SELECT spc_latin
+                    		,zipcode
+                    		,boroname
+                    		,health
+                            ,'1995' AS year
+                    		,count(tree_id)
+                    FROM trees_1995
+                    GROUP BY spc_latin
+                    		,zipcode
+                    		,boroname
+                    		,health
+                    )
+
+                    UNION ALL
+
+                    (SELECT spc_latin
+                    		,zipcode
+                    		,boroname
+                    		,health
+                            ,'2005' AS year
+                    		,count(tree_id)
+                    FROM trees_2005
+                    GROUP BY spc_latin
+                    		,zipcode
+                    		,boroname
+                    		,health
+                    )
+
+                    UNION ALL
+
+                    (SELECT spc_latin
+                    		,zipcode
+                    		,boroname
+                    		,health
+                            ,'2015' AS year
+                    		,count(tree_id)
+                    FROM trees_2015
+                    GROUP BY spc_latin
+                    		,zipcode
+                    		,boroname
+                    		,health
+                    )''')
+
+    cursor.execute(get_tree)
+    return cursor.fetchall()
