@@ -57,7 +57,7 @@ def get_zip_info():
     cursor.execute(get_zip)
     return cursor.fetchall()
 
-def get_all_trees_agg():
+def get_all_trees_with_health_agg():
 
     get_tree = ('''(SELECT zipcode
                     		,boroname
@@ -69,7 +69,6 @@ def get_all_trees_agg():
                             END AS healthy
                             ,'1995' AS year
                     		,count(tree_id) AS tree_count
-                            ,count(DISTINCT spc_latin) AS distinct_species
                     FROM trees_1995
                     GROUP BY 1
                     		,2
@@ -88,7 +87,6 @@ def get_all_trees_agg():
                             END AS healthy
                             ,'2005' AS year
                     		,count(tree_id)  AS tree_count
-                            ,count(DISTINCT spc_latin) AS distinct_species
                     FROM trees_2005
                     GROUP BY 1
                     		,2
@@ -107,12 +105,54 @@ def get_all_trees_agg():
                             END AS healthy
                             ,'2015' AS year
                     		,count(tree_id)  AS tree_count
-                            ,count(DISTINCT spc_latin) AS distinct_species
                     FROM trees_2015
                     GROUP BY 1
                     		,2
                     		,3
                     		,4
+                    )''')
+
+    cursor.execute(get_tree)
+    return cursor.fetchall()
+
+
+def get_distinct_trees_by_zip():
+
+    get_tree = ('''(SELECT zipcode
+                    		,boroname
+                            ,'1995' AS year
+                    		,count(tree_id) AS tree_count
+                            ,count(DISTINCT spc_latin) AS distinct_species
+                    FROM trees_1995
+                    GROUP BY 1
+                    		,2
+                    		,3
+                    )
+
+                    UNION ALL
+
+                    (SELECT zipcode
+                    		,boroname
+                            ,'2005' AS year
+                    		,count(tree_id)  AS tree_count
+                            ,count(DISTINCT spc_latin) AS distinct_species
+                    FROM trees_2005
+                    GROUP BY 1
+                    		,2
+                    		,3
+                    )
+
+                    UNION ALL
+
+                    (SELECT zipcode
+                    		,boroname
+                            ,'2015' AS year
+                    		,count(tree_id)  AS tree_count
+                            ,count(DISTINCT spc_latin) AS distinct_species
+                    FROM trees_2015
+                    GROUP BY 1
+                    		,2
+                    		,3
                     )''')
 
     cursor.execute(get_tree)
