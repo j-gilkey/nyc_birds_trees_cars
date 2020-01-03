@@ -7,7 +7,6 @@ from sodapy import Socrata
 
 # set database name
 DB_NAME = 'birds_trees_etc'
-pd.set_option('display.max_columns', None)
 
 # create connection
 cnx = mysql.connector.connect(

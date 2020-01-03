@@ -18,4 +18,4 @@ def parse_zips():
             mysql_functions.insert_zip(zip_tuple)
 
 
-parse_zips()
+#parse_zips()

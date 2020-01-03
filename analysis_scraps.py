@@ -11,6 +11,7 @@ from statsmodels.stats.multicomp import MultiComparison
 from scipy.stats import ttest_ind
 from scipy.stats import pearsonr
 from scipy import stats
+import random
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -27,12 +28,12 @@ big_df['trees_per_sq_mile'] = big_df['trees_per_sq_mile'].astype(float)
 #big_df['normalized'] =
 big_df['median_home_value'] = big_df['median_home_value'].astype(float)
 
-df_man = big_df[big_df['boro'] == 'Manhattan']
-df_stat = big_df[big_df['boro'] == 'Staten Island']
-df_bron = big_df[big_df['boro'] == 'Bronx']
+# df_man = big_df[big_df['boro'] == 'Manhattan']
+# df_stat = big_df[big_df['boro'] == 'Staten Island']
+# df_bron = big_df[big_df['boro'] == 'Bronx']
 df_queen = big_df[big_df['boro'] == 'Queens']
-df_brook = big_df[big_df['boro'] == 'Brooklyn']
-boro_list = [df_man, df_stat, df_bron, df_queen, df_brook]
+# df_brook = big_df[big_df['boro'] == 'Brooklyn']
+# boro_list = [df_man, df_stat, df_bron, df_queen, df_brook]
 #print(list(big_df.boro.unique()))
 
 #print(big_df)
@@ -79,21 +80,10 @@ def anova_tree(df):
 
 #anova_tree(big_df)
 
-def multicomp_income(df):
-    mc = MultiComparison(df['median_household_income'], df['boro'])
+def multicomp_variable(df, basis):
+    mc = MultiComparison(df[basis], df['test_or_control'])
     mc_results = mc.tukeyhsd()
     print(mc_results)
-
-#multicomp_tree(big_df)
-
-def multicomp_tree(df):
-    mc = MultiComparison(df['trees_per_sq_mile'], df['boro'])
-    mc_results = mc.tukeyhsd()
-    print(mc_results)
-
-#multicomp_tree(big_df)
-
-
 
 
 def pearsonr_by_boro(df):
@@ -110,6 +100,31 @@ def pearsonr_by_boro(df):
         print(boros.boro.unique())
         print(pearsonr(boros['median_home_value'], boros['trees_per_sq_mile']))
 
-pearsonr_by_boro(big_df)
+#pearsonr_by_boro(big_df)
 
-#print(df_queen)
+def compare_zip_to_sample(zips, sample_size = 10, year = '2015', borough = 'any'):
+    table = 'trees_' + str(year)
+    zip_list = mysql_functions.get_zip_list(table, borough)
+    zip_samples = random.sample(zip_list, sample_size)
+    print(zip_samples)
+
+    control_df = big_df[big_df['zipcode'].isin(zip_samples)]
+    #print(control_df)
+    control_df['test_or_control'] = 'control'
+
+    test_df = big_df[big_df['zipcode'].isin(zips)]
+    test_df['test_or_control'] = 'test'
+
+    final_df = pd.concat([control_df, test_df])
+
+    return final_df
+
+example_df = compare_zip_to_sample(['11001', '11363'], 20)
+print(example_df)
+
+multicomp_variable(example_df, 'median_home_value')
+
+
+#print(compare_zip_to_sample(['11001', '11363'], 5))
+
+#print(df_queen.sort_values(by=['median_household_income']))
