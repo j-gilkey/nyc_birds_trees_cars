@@ -110,6 +110,8 @@ def pearsonr_by_boro(df):
         print(boros.boro.unique())
         print(pearsonr(boros['median_home_value'], boros['trees_per_sq_mile']))
 
-pearsonr_by_boro(big_df)
+#pearsonr_by_boro(big_df)
 
-#print(df_queen)
+
+
+print(df_queen)
