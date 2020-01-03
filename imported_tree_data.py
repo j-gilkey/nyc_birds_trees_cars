@@ -5,6 +5,7 @@ import config
 import mysql_functions as my_funcs
 from sodapy import Socrata
 from geopy.distance import geodesic
+import random
 
 pd.set_option('display.max_columns', None)
 
@@ -33,15 +34,41 @@ def get_neighbors(tree_loc, spc, df):
     #gets geodesic distance between singular tree and a group of trees. Then filters down to trees within 1000 feet. Note that each tree is a neighbor of itself
     df['distance'] = df.apply(lambda row: geodesic(row['loc_tuple'], tree_loc).feet,  axis = 1)
     neighbors_df = (df[df['distance'] < 1000])
+    #print('here 2')
     neighbor_tuple = (neighbors_df.shape[0], neighbors_df['spc_latin'].nunique(), neighbors_df[neighbors_df['spc_latin'] == spc].shape[0])
     #neighbor tuple consists of (total_neighbors, distinct species neighbors, same species neighbors)
     return neighbor_tuple
 
 def apply_neighbors(df):
     df['loc_tuple'] = df.apply(lambda row: (row['latitude'], row['longitude']), axis = 1)
+    print('here 1')
+    print(df.shape)
     df[['total_neighbors', 'distinct_spc_neighbors', 'same_spc_neighbors']] = df.apply(lambda row: pd.Series(get_neighbors(row['loc_tuple'], row['spc_latin'], df[df['zipcode'] == row['zipcode']])), axis = 1)
     #df[['total_neighbors', 'distinct_spc_neighbors', 'same_spc_neighbors']] = df.apply(lambda row: pd.Series(get_neighbors(row['loc_tuple'], row['spc_latin'], df[df['zip_new'] == row['zip_new']])), axis = 1)
+    df_insert = df[['total_neighbors', 'distinct_spc_neighbors', 'same_spc_neighbors', 'tree_id']]
     return df
+
+def draw_sample(year, borough = 'any', zip_code = 'any'):
+    table = 'trees_' + str(year)
+    if zip_code == 'any':
+        zip_list = my_funcs.get_zip_list(table, borough)
+        zip_code = random.sample(zip_list, 1)[0]
+    else:
+        zip_code = str(zip_code)
+    zip_df = pd.DataFrame(my_funcs.get_data_by_zip(str(zip_code), table), columns = ['tree_id', 'health', 'spc_latin', 'zipcode', 'boroname', 'latitude', 'longitude'])
+    print(zip_df)
+    zip_df = apply_neighbors(zip_df)
+    print(zip_df)
+    zip_tuples = list(zip_df[['total_neighbors', 'distinct_spc_neighbors', 'same_spc_neighbors', 'tree_id']].itertuples(index=False, name=None))
+    print(zip_tuples)
+    my_funcs.update_neighbor_values(zip_tuples,table)
+
+    return
+
+#print (draw_ten_samples('2005', 'Queens'))
+
+draw_sample('2005', 'Queens', 'any')
+
 
 #
 #
@@ -79,4 +106,4 @@ def get_1995_with_diameter(zipcode):
 
     return tree_data_95
 
-print(get_1995_with_diameter('10007'))
+#print(get_1995_with_diameter('10007'))

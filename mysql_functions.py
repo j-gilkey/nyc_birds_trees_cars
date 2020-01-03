@@ -57,6 +57,35 @@ def get_zip_info():
     cursor.execute(get_zip)
     return cursor.fetchall()
 
+def get_zip_list(table, borough = 'any'):
+    #takes in a database name from the list ['trees_2005', 'trees_2015', 'trees_1995'] and a borough and returns a full zip list
+    if borough == 'any':
+        get_list = ('(SELECT zipcode FROM ' + table + ' WHERE total_neighbors IS NULL GROUP BY zipcode)')
+    else:
+        get_list = ('(SELECT zipcode FROM ' + table + ' WHERE total_neighbors IS NULL AND boroname = "'+ borough +'" GROUP BY zipcode)')
+
+    cursor.execute(get_list)
+    return list(map(lambda x: x[0],cursor.fetchall()))
+
+#print(get_zip_list('trees_2005', 'Queens'))
+
+def get_data_by_zip(zip_code, table):
+    get_data = ('(SELECT tree_id, health, spc_latin, zipcode, boroname, lat, lng FROM ' + table + ' WHERE zipcode = "' + zip_code + '")')
+    cursor.execute(get_data)
+    return cursor.fetchall()
+
+
+def update_neighbor_values(tuple_list, table):
+    update_vals = ('UPDATE ' + table +
+                """
+                SET total_neighbors = %s,
+                    distinct_spc_neighbors = %s,
+                    same_spc_neighbors = %s
+                WHERE tree_id = %s;
+                """ )
+    cursor.executemany(update_vals, tuple_list)
+    cnx.commit()
+
 def get_all_trees_with_health_agg():
 
     get_tree = ('''(SELECT zipcode
