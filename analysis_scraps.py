@@ -102,24 +102,29 @@ def pearsonr_by_boro(df):
 
 #pearsonr_by_boro(big_df)
 
-def compare_zip_to_sample(zips, sample_size = 10, year = '2015', borough = 'any'):
-    table = 'trees_' + str(year)
-    zip_list = mysql_functions.get_zip_list(table, borough)
-    zip_samples = random.sample(zip_list, sample_size)
-    print(zip_samples)
+# def compare_zip_to_sample(zips, sample_size = 10, year = '2015', borough = 'any'):
+#     table = 'trees_' + str(year)
+#     zip_list = mysql_functions.get_zip_list(table, borough)
+#     zip_samples = random.sample(zip_list, sample_size)
+#     print(zip_samples)
+#
+#     control_df = big_df[big_df['zipcode'].isin(zip_samples)]
+#     #print(control_df)
+#     control_df['test_or_control'] = 'control'
+#
+#     test_df = big_df[big_df['zipcode'].isin(zips)]
+#     test_df['test_or_control'] = 'test'
+#
+#     final_df = pd.concat([control_df, test_df])
+#
+#     return final_df
 
-    control_df = big_df[big_df['zipcode'].isin(zip_samples)]
-    #print(control_df)
-    control_df['test_or_control'] = 'control'
+def compare_zip_to_pop(zips, df):
+    df['test_or_control'] = 'control'
+    df.loc[df.zipcode.isin(zips), 'test_or_control'] = 'test'
+    return df
 
-    test_df = big_df[big_df['zipcode'].isin(zips)]
-    test_df['test_or_control'] = 'test'
-
-    final_df = pd.concat([control_df, test_df])
-
-    return final_df
-
-example_df = compare_zip_to_sample(['11001', '11363'], 20)
+example_df = compare_zip_to_pop(['11001', '11363'], df_queen)
 print(example_df)
 
 multicomp_variable(example_df, 'median_home_value')
