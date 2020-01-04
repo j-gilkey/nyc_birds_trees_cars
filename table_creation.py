@@ -85,6 +85,7 @@ TABLES['trees_2015'] = (
     PRIMARY KEY (tree_id)
     );""")
 
+
 TABLES['zip_demographics'] = (
 """CREATE TABLE zip_demographics(
     zip_code int NOT NULL,

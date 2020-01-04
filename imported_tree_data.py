@@ -33,7 +33,7 @@ pd.set_option('display.max_columns', None)
 def get_neighbors(tree_loc, spc, df):
     #gets geodesic distance between singular tree and a group of trees. Then filters down to trees within 1000 feet. Note that each tree is a neighbor of itself
     df['distance'] = df.apply(lambda row: geodesic(row['loc_tuple'], tree_loc).feet,  axis = 1)
-    neighbors_df = (df[df['distance'] < 1000])
+    neighbors_df = (df[df['distance'] < 500])
     #print('here 2')
     neighbor_tuple = (neighbors_df.shape[0], neighbors_df['spc_latin'].nunique(), neighbors_df[neighbors_df['spc_latin'] == spc].shape[0])
     #neighbor tuple consists of (total_neighbors, distinct species neighbors, same species neighbors)
@@ -64,6 +64,12 @@ def draw_sample(year, borough = 'any', zip_code = 'any'):
     my_funcs.update_neighbor_values(zip_tuples,table)
 
     return
+
+def draw_10_zips():
+    for i in range(9):
+        draw_sample('2015')
+        print(i)
+    print('Done now')
 
 #print (draw_ten_samples('2005', 'Queens'))
 
