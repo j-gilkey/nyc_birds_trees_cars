@@ -28,10 +28,10 @@ big_df['trees_per_sq_mile'] = big_df['trees_per_sq_mile'].astype(float)
 #big_df['normalized'] =
 big_df['median_home_value'] = big_df['median_home_value'].astype(float)
 
-# df_man = big_df[big_df['boro'] == 'Manhattan']
-# df_stat = big_df[big_df['boro'] == 'Staten Island']
-# df_bron = big_df[big_df['boro'] == 'Bronx']
-df_queen = big_df[big_df['boro'] == 'Queens']
+df_man = big_df[big_df['boro'] == 'Manhattan']
+#df_stat = big_df[big_df['boro'] == 'Staten Island']
+#df_bron = big_df[big_df['boro'] == 'Bronx']
+#df_queen = big_df[big_df['boro'] == 'Queens']
 # df_brook = big_df[big_df['boro'] == 'Brooklyn']
 # boro_list = [df_man, df_stat, df_bron, df_queen, df_brook]
 #print(list(big_df.boro.unique()))
@@ -52,8 +52,10 @@ def hist_plot(df):
     fig = plt.figure()
     plt.style.use('seaborn')
     sns.set_palette('colorblind')
-    hist_serial = sns.distplot(df['median_home_value'], kde = False)
-    hist_serial.set_xlabel('Median Home Value')
+    hist_serial = sns.distplot(df['trees_per_sq_mile'], kde = False)
+    print(stats.kurtosis(list(df['trees_per_sq_mile'])))
+    print(stats.skew(list(df['trees_per_sq_mile'])))
+    hist_serial.set_xlabel('Trees Per Sq Mile')
     #hist_serial.set_xlabel('Trees per sq Mile')
     plt.show()
 
@@ -92,7 +94,7 @@ def pearsonr_by_boro(df):
     df_bronx = df[df['boro'] == 'Bronx']
     df_queens = df[df['boro'] == 'Queens']
     df_brook = df[df['boro'] == 'Brooklyn']
-    boro_list = [df_man, df_stat, df_bron, df_queen, df_brook]
+    boro_list = [df_man, df_stat, df_bronx, df_queens, df_brook]
 
     print(pearsonr(big_df['median_home_value'], big_df['trees_per_sq_mile']))
 
@@ -124,12 +126,57 @@ def compare_zip_to_pop(zips, df):
     df.loc[df.zipcode.isin(zips), 'test_or_control'] = 'test'
     return df
 
-example_df = compare_zip_to_pop(['11001', '11363'], df_queen)
-print(example_df)
-
-multicomp_variable(example_df, 'median_home_value')
+# example_df = compare_zip_to_pop(['11001', '11363'], df_queen)
+# print(example_df)
+# multicomp_variable(example_df, 'median_home_value')
 
 
 #print(compare_zip_to_sample(['11001', '11363'], 5))
 
-#print(df_queen.sort_values(by=['median_household_income']))
+#print(df_man.sort_values(by=['median_home_value']))
+
+# def filtered_queens(df):
+#     df = df[df['trees_per_sq_mile'] > 500]
+#     df = df[df['median_home_value'] < 1000000]
+#     print(df.sort_values(by=['median_home_value']))
+#
+#     print(pearsonr(df['median_home_value'], df['trees_per_sq_mile']))
+#
+# filtered_queens(df_man)
+
+def top_n_compare_density(df,n):
+    overall_mean = df['trees_per_sq_mile'].mean()
+    standard_error = df['trees_per_sq_mile'].sem()
+    print(overall_mean)
+    print(standard_error)
+    top_n = df.nlargest(n, 'median_home_value')
+    print(top_n)
+    density_list = list(top_n['trees_per_sq_mile'])
+    return stats.ttest_1samp(density_list, overall_mean)
+
+def top_n_compare_value(df,n):
+    overall_mean = df['median_home_value'].mean()
+    standard_error = df['median_home_value'].sem()
+    print(overall_mean)
+    print(standard_error)
+    top_n = df.nlargest(n, 'trees_per_sq_mile')
+    #print(top_n)
+    print(top_n.groupby('boro').size())
+    density_list = list(top_n['median_home_value'])
+    return stats.ttest_1samp(density_list, overall_mean)
+
+
+print(top_n_compare_value(big_df, 40))
+
+def every_boro(df):
+    df_man = df[df['boro'] == 'Manhattan']
+    df_stat = df[df['boro'] == 'Staten Island']
+    df_bronx = df[df['boro'] == 'Bronx']
+    df_queens = df[df['boro'] == 'Queens']
+    df_brook = df[df['boro'] == 'Brooklyn']
+    boro_list = [df_man, df_stat, df_bronx, df_queens, df_brook]
+    for boros in boro_list:
+        print(boros.boro.unique())
+        print(top_n_compare_value(boros,5))
+
+#every_boro(big_df)

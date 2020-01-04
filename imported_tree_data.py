@@ -65,6 +65,12 @@ def draw_sample(year, borough = 'any', zip_code = 'any'):
 
     return
 
+def draw_10_zips():
+    for i in range(9):
+        draw_sample('2015')
+        print(i)
+    print('Done now')
+
 #print (draw_ten_samples('2005', 'Queens'))
 
 draw_sample('2005', 'Queens', 'any')
